@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 var express = require('express')
   , session = require('express-session')
   , jwt = require('jsonwebtoken')
@@ -5,11 +7,11 @@ var express = require('express')
   , morgan = require('morgan')
 var Grant = require('grant-express')
   , port = process.env.PORT || 3001
-  , oauthConsumer= `localhost:${port}`
-  , oauthProvider = process.env.OAUTH_PROVIDER_URL || 'http://localhost:3000'
+  , oauthConsumer= process.env.OAUTH_CONSUMER || `http://localhost`
+  , oauthProvider = process.env.OAUTH_PROVIDER_URL || 'http://localhost'
   , grant = new Grant({
     defaults: {
-      protocol: 'http',
+      protocol: 'https',
       host: oauthConsumer,
       transport: 'session',
       state: true
@@ -21,11 +23,11 @@ var Grant = require('grant-express')
       authorize_url: `${oauthProvider}/oauth/authorize`,
       access_url: `${oauthProvider}/oauth/token`,
       oauth: 2,
-      scope: ['openid', 'profile', 'admin'],
+      scope: ['openid', 'profile'],
       callback: '/done',
       scope_delimiter: ' ',
       custom_params: { deviceId: 'abcd', appId: 'com.pud' }
-    },
+    }
   })
 
 var app = express()
